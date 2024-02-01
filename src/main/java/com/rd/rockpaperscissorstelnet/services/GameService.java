@@ -20,7 +20,7 @@ public class GameService {
     private final Queue<Player> freePlayers = new LinkedList<>();
     private final Map<UUID, GameSession> gameSessions = new HashMap<>();
 
-    public void removePlayer(Player player) {
+    public void removePlayer(Player player) throws InterruptedException {
         freePlayers.remove(player);
         GameSession gameSession = gameSessions.remove(player.getGameSessionId());
         Player anotherPlayer = gameSession.getAnotherPlayer(player);
@@ -50,7 +50,13 @@ public class GameService {
 
     public void makeChoice(Player player, PlayerAction playerAction) throws InterruptedException {
         GameSession playerSession = gameSessions.get(player.getGameSessionId());
-        playerSession.getPlayerActions().merge(player, playerAction, (k,v) -> playerAction);
+
+        if (playerSession.getPlayerActions().get(player) != null) {
+            notificationService.notifyAlreadyMadeAction(player);
+            return;
+        }
+
+        playerSession.getPlayerActions().merge(player, playerAction, (k, v) -> playerAction);
 
         if (!playerSession.isAllActionsDone()) {
             return;

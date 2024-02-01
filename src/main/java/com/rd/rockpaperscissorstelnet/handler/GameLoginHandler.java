@@ -55,7 +55,7 @@ public class GameLoginHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext context) {
+    public void channelInactive(ChannelHandlerContext context) throws InterruptedException {
         Player player = channelService.getChannelUser(context.channel());
         if (player != null) {
             gameService.removePlayer(player);
