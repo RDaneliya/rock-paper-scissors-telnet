@@ -1,0 +1,9 @@
+telnet:
+  port: 8081
+  bossGroupSize: 1
+  worker-group-size: 10
+  keep-alive: true
+  backlog: 100
+logging:
+  level:
+    com.rd: debug
